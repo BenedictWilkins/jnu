@@ -27,5 +27,5 @@ setup(name='jnu',
       author='Benedict Wilkins',
       author_email='benrjw@gmail.com',
       packages=find_packages(),
-      install_requires=[],
+      install_requires=['jupyter', 'jupyterlab', 'ipykernel', 'ipython', 'ipywidgets', 'ipycanvas'],
       zip_safe=False)

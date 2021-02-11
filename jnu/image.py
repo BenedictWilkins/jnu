@@ -21,16 +21,23 @@ from IPython.display import display, clear_output
 
 #from ipyevents import Event 
 from ipycanvas import Canvas, MultiCanvas
+
+from matplotlib import pyplot as plt
+from matplotlib import animation
+from IPython.display import HTML
+
 import ipywidgets
 import skimage
 
+
+
 from . import utils
 
-@utils.normalise_input
+@utils.as_numpy
 def resize(image, size):
     return skimage.transform.resize(image, size, order=0, preserve_range=True)
 
-@utils.normalise_input
+@utils.as_numpy
 def HWC(image):
     if len(image.shape) == 2:
         return image[:,:,np.newaxis]
@@ -46,7 +53,7 @@ def HWC(image):
 
     return image # ready in HWC format
 
-@utils.normalise_input
+@utils.as_numpy
 def hgallery(x, n=10):
     x = HWC(x)
 
@@ -59,6 +66,38 @@ def hgallery(x, n=10):
         x = np.pad(x, pad)
         m,h,w,c = x.shape
     return x.swapaxes(1,2).reshape(m//n, w * n, h, c).swapaxes(1,2)
+
+class Video:
+    
+    def __init__(self, video, frame_rate = 30, interpolation='nearest'):
+        super(Video, self).__init__()
+
+        self.video = video
+        self.frame_rate = frame_rate
+
+        if isinstance(video, str):
+            raise NotImplementedError("TODO - play video from file")
+
+        elif isinstance(video, np.ndarray):
+            fig = plt.figure()
+            im = plt.imshow(self.video[0,...], interpolation = interpolation)
+            plt.axis('off')
+            plt.close() 
+
+            def init():
+                im.set_data(self.video[0,:,:,:])
+
+            def animate(i):
+                im.set_data(self.video[i,:,:,:])
+                return im
+
+            anim = animation.FuncAnimation(fig, animate, init_func=init, frames=self.video.shape[0],
+                                            interval=1000/self.frame_rate)
+
+            self.fig = HTML(anim.to_html5_video())
+
+    def display(self):
+        display(self.fig)
 
 class Image:
 

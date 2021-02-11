@@ -26,14 +26,22 @@ from . import utils
 
 import ipywidgets
 
-@utils.normalise_input
+@utils.as_numpy
+@utils.as_HWC(0)
+def video(video, scale=1, frame_rate=30, show=True):
+    video_widget = jnu_image.Video(video, frame_rate)
+    if show:
+        video_widget.display()
+    return video_widget
+    
+@utils.as_numpy
 def image(image, scale=1, show=True):
     image_widget = jnu_image.Image(image, scale=scale)
     if show:
         image_widget.display()
     return image_widget
 
-@utils.normalise_input
+@utils.as_numpy
 def images(images, scale=1, on_interact=lambda x: None, step=0, value=0, show=True):
     image_widget = jnu_image.Image(images[step], scale=scale)
     
