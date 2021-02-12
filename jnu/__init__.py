@@ -17,7 +17,6 @@ from inspect import getframeinfo
 import io
 from contextlib import redirect_stdout
 
-from IPython.core.display import HTML
 from IPython.display import display, clear_output
 
 from . import image as jnu_image
@@ -25,6 +24,9 @@ from .image import hgallery
 from . import utils
 
 import ipywidgets
+
+from ipywidgets import Text, HTML
+
 
 @utils.as_numpy
 @utils.as_HWC(0)
