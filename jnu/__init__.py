@@ -27,6 +27,13 @@ import ipywidgets
 
 from ipywidgets import Text, HTML
 
+def table(data):
+    display(HTML(
+    '<table><tr>{}</tr></table>'.format(
+        '</tr><tr>'.join(
+            '<td>{}</td>'.format('</td><td>'.join(str(_) for _ in row)) for row in data)
+        )
+    ))
 
 @utils.as_numpy
 @utils.as_HWC(0)
@@ -105,7 +112,7 @@ def cell_variables():
     with redirect_stdout(out): #get all cell inputs
         ipy.magic("history {0}".format(ipy.execution_count))
     cell_inputs = out.getvalue()
-    
+
     #get caller globals ---- LOL HACKz
     frame = inspect.stack()[1][0]
     c_line = getframeinfo(frame).lineno
@@ -113,7 +120,7 @@ def cell_variables():
     if not "_" in g:
         raise ValueError("The function \"cell_variables\" must be called from within a Jupyter Notebook.")
     
-    IGNORE = "# ignore"
+    IGNORE = "#ignore"
     #process each line...
     x = cell_inputs.replace(" ", "").split("\n")
     x.pop(c_line - 1) #lines are 1 indexed, remove the calling line 
