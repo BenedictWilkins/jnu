@@ -27,5 +27,6 @@ setup(name='jnu',
       author='Benedict Wilkins',
       author_email='benrjw@gmail.com',
       packages=find_packages(),
-      install_requires=['jupyter', 'jupyterlab', 'ipykernel', 'ipython', 'ipywidgets', 'ipycanvas'],
+      install_requires=['jupyter', 'jupyterlab', 'ipykernel', 'ipython', 'ipywidgets', 'ipycanvas',
+                        'scikit-image', 'matplotlib'],
       zip_safe=False)
