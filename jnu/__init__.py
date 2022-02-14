@@ -11,6 +11,7 @@ __status__ ="Development"
 
 import os
 import sys
+import pathlib
 
 import inspect
 from inspect import getframeinfo
@@ -19,13 +20,18 @@ from contextlib import redirect_stdout
 
 from IPython.display import display, clear_output
 
-from . import image as jnu_image
-from .image import hgallery 
+import ipywidgets
+from ipywidgets import Text, HTML
+
+from .image import *
+
 from . import utils
 
-import ipywidgets
+from . import plot
+from .plot import scatter_image
 
-from ipywidgets import Text, HTML
+
+
 
 def table(data):
     display(HTML(
@@ -35,40 +41,7 @@ def table(data):
         )
     ))
 
-@utils.as_numpy
-@utils.as_HWC(0)
-def video(video, scale=1, frame_rate=30, show=True):
-    video_widget = jnu_image.Video(video, frame_rate)
-    if show:
-        video_widget.display()
-    return video_widget
-    
-@utils.as_numpy
-def image(image, scale=1, show=True):
-    image_widget = jnu_image.Image(image, scale=scale)
-    if show:
-        image_widget.display()
-    return image_widget
 
-@utils.as_numpy
-def images(images, scale=1, on_interact=lambda x: None, step=0, value=0, show=True):
-    image_widget = jnu_image.Image(images[step], scale=scale)
-    
-    # make it easy to display list meta data
-    if hasattr(on_interact, '__getitem__'):
-        l = on_interact
-        def list_on_interact(z):
-            print("value:", l[z]) #this only works with later version of ipython?
-        on_interact = list_on_interact
-
-    def slide(x):
-        image_widget.update(images[x])
-        on_interact(x)
-
-    ipywidgets.interact(slide, x=ipywidgets.IntSlider(min=0, max=len(images)-1, step=step + 1, value=value, layout=dict(width='99%'))) #width 100% makes a scroll bar appear...?
-    if show:
-        image_widget.display()
-    return image_widget
 
 def progress(iterator, length=None, info=None):
     if info is not None:
@@ -94,8 +67,13 @@ def local_import(level=0):
     """ 
         Allow importing local .py files.
     """
-    path = ".." + level * "/.."
-    module_path = os.path.abspath(os.path.join(path))
+    
+    if not level:
+        path = pathlib.Path(".").absolute()
+    else:
+        path = pathlib.Path(level * "../").absolute() 
+    # absolute doesnt seem to get rid of ../ ? 
+    module_path = str(path)
     if module_path not in sys.path:
         sys.path.append(module_path)
 

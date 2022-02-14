@@ -28,5 +28,5 @@ setup(name='jnu',
       author_email='benrjw@gmail.com',
       packages=find_packages(),
       install_requires=['jupyter', 'jupyterlab', 'ipykernel', 'ipython', 'ipywidgets', 'ipycanvas',
-                        'scikit-image', 'matplotlib'],
+                        'scikit-image', 'matplotlib', 'scipy'],
       zip_safe=False)
